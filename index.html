@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon1.png"/>
+<title>Nowruz Club · Open Sprint</title>
+<meta name="description" content="A fortnightly marketplace of projects and skills. Nowruz Club connects talented persian language People in the world with open projects that need exactly that.">
+<meta property="og:title" content="Nowruz Club · Open Sprint">
+<meta property="og:description" content="A fortnightly marketplace of projects and skills.">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --c-accent:#00D084;--c-accent2:#00B8D4;--c-bg:#0D1117;--c-surface:#161B22;
+    --c-surface2:#21262D;--c-border:#30363D;--c-text:#E6EDF3;--c-muted:#8B949E;
+    --c-dim:#484F58;--font-mono:'Fira Code','Courier New',monospace;
+  }
+  body{background:var(--c-bg);color:var(--c-text);font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.6;overflow-x:hidden}
+  a{color:var(--c-accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+  .nav-logo{font-family:var(--font-mono);font-size:15px;color:var(--c-accent);font-weight:600;display:flex;align-items:center;gap:8px}
+  .nav-logo span{color:var(--c-muted)}
+  .nav-links{display:flex;gap:1.5rem;font-size:13px;color:var(--c-muted)}
+  .nav-links a{color:var(--c-muted);transition:color .2s}
+  .nav-links a:hover{color:var(--c-text);text-decoration:none}
+  .nav-cta{background:var(--c-accent);color:#000;border:none;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s}
+  .nav-cta:hover{opacity:.85}
+
+  .hero{min-height:88vh;display:flex;align-items:center;justify-content:center;padding:5rem 2rem;position:relative;overflow:hidden}
+  canvas#grid-canvas{position:fixed;top:0;left:0;width:100%;height:100%;opacity:.25;pointer-events:none;z-index:0}
+  .hero-inner{max-width:800px;text-align:center;position:relative;z-index:1}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,208,132,.1);border:1px solid rgba(0,208,132,.3);border-radius:20px;padding:6px 14px;font-size:12px;font-family:var(--font-mono);color:var(--c-accent);margin-bottom:1.5rem}
+  .hero-badge::before{content:'●';animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;line-height:1.15;margin-bottom:1.2rem}
+  .h1-accent{color:var(--c-accent)}
+  .hero-sub{font-size:1.1rem;color:var(--c-muted);max-width:560px;margin:0 auto 2.5rem}
+  .hero-meta{font-family:var(--font-mono);font-size:12px;color:var(--c-dim);margin-bottom:2rem}
+  .hero-meta span{color:var(--c-muted)}
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn-primary{background:var(--c-accent);color:#000;padding:11px 24px;border-radius:8px;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:transform .15s,opacity .15s}
+  .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:var(--c-text);padding:10px 24px;border-radius:8px;font-size:14px;border:1px solid var(--c-border);cursor:pointer;transition:border-color .2s,transform .15s;text-decoration:none;display:inline-block}
+  .btn-outline:hover{border-color:var(--c-accent);transform:translateY(-1px);text-decoration:none;color:var(--c-text)}
+  .stats-row{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:3.5rem;padding-top:2.5rem;border-top:1px solid var(--c-border)}
+  .stat{text-align:center}
+  .stat-num{font-size:1.8rem;font-weight:700;color:var(--c-text)}
+  .stat-lbl{font-size:12px;color:var(--c-muted);font-family:var(--font-mono)}
+
+  section{padding:5rem 2rem;max-width:1100px;margin:0 auto;position:relative;z-index:1}
+  .sec-header{margin-bottom:3rem}
+  .sec-label{font-family:var(--font-mono);font-size:12px;color:var(--c-accent);letter-spacing:.08em;margin-bottom:.5rem}
+  .sec-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700}
+  .sec-sub{font-size:.95rem;color:var(--c-muted);margin-top:.5rem;max-width:520px}
+
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  @media(max-width:680px){.about-grid{grid-template-columns:1fr}}
+  .about-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1.5rem}
+  .about-card h3{font-size:15px;font-weight:600;margin-bottom:.6rem;color:var(--c-accent)}
+  .about-card p{font-size:14px;color:var(--c-muted);line-height:1.7}
+
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem}
+  .proj-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1.5rem;transition:border-color .2s,transform .2s}
+  .proj-card:hover{border-color:var(--c-accent);transform:translateY(-2px)}
+  .proj-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem}
+  .proj-title{font-size:15px;font-weight:600}
+  .proj-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-family:var(--font-mono);font-weight:600;white-space:nowrap}
+  .badge-active{background:rgba(0,208,132,.12);color:var(--c-accent);border:1px solid rgba(0,208,132,.3)}
+  .badge-waiting{background:rgba(139,148,158,.1);color:var(--c-muted);border:1px solid var(--c-border)}
+  .badge-contrib{background:rgba(0,184,212,.1);color:var(--c-accent2);border:1px solid rgba(0,184,212,.3)}
+  .proj-desc{font-size:13px;color:var(--c-muted);margin-bottom:1rem;line-height:1.6}
+  .tech-stack{display:flex;flex-wrap:wrap;gap:6px}
+  .tech-tag{font-size:11px;font-family:var(--font-mono);background:var(--c-surface2);border:1px solid var(--c-border);border-radius:4px;padding:2px 8px;color:var(--c-muted)}
+  .proj-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--c-border)}
+  .proj-owner{font-size:12px;color:var(--c-dim);font-family:var(--font-mono)}
+  .proj-links a{font-size:12px;color:var(--c-muted)}
+  .proj-links a:hover{color:var(--c-accent)}
+  
+  .sprint-box{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:2rem}
+  .sprint-phase{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+  .phase-item{flex:1;min-width:150px;border-left:2px solid var(--c-accent);padding-left:1rem}
+  .phase-item.dim{border-color:var(--c-dim)}
+  .phase-name{font-size:13px;font-weight:600;margin-bottom:.2rem}
+  .phase-desc{font-size:12px;color:var(--c-muted)}
+
+ 
+
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+  .member-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1.25rem;text-align:center}
+  .avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;margin:0 auto .75rem}
+  .av-green{background:rgba(0,208,132,.15);color:var(--c-accent)}
+  .av-blue{background:rgba(0,184,212,.15);color:var(--c-accent2)}
+  .av-purple{background:rgba(139,92,246,.15);color:#a78bfa}
+  .member-name{font-size:14px;font-weight:600;margin-bottom:.2rem}
+  .member-role{font-size:12px;color:var(--c-accent);font-family:var(--font-mono);margin-bottom:.5rem}
+  .member-loc{font-size:11px;color:var(--c-dim)}
+
+  .events-list{display:flex;flex-direction:column;gap:.75rem}
+  .event-item{background:var(--c-surface);border:1px solid var(--c-border);border-radius:10px;padding:1.25rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+  .event-date{text-align:center;min-width:52px;background:var(--c-surface2);border-radius:8px;padding:.5rem;border:1px solid var(--c-border)}
+  .event-month{font-size:10px;font-family:var(--font-mono);color:var(--c-accent);text-transform:uppercase}
+  .event-day{font-size:22px;font-weight:700}
+  .event-info h4{font-size:14px;font-weight:600;margin-bottom:.2rem}
+  .event-info p{font-size:12px;color:var(--c-muted)}
+  .event-tag{margin-left:auto;font-size:11px;font-family:var(--font-mono);padding:3px 10px;border-radius:20px;white-space:nowrap}
+
+  .how-steps{display:flex;flex-direction:column;gap:1px}
+  .how-step{display:flex;gap:1.5rem;padding:1.5rem;background:var(--c-surface);border:1px solid var(--c-border)}
+  .how-step:first-child{border-radius:12px 12px 0 0}
+  .how-step:last-child{border-radius:0 0 12px 12px}
+  .step-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,208,132,.1);border:1px solid rgba(0,208,132,.2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--c-accent);flex-shrink:0}
+  .how-step h4{font-size:14px;font-weight:600;margin-bottom:.3rem}
+  .how-step p{font-size:13px;color:var(--c-muted)}
+  code{font-family:var(--font-mono);font-size:12px;background:var(--c-surface2);padding:2px 6px;border-radius:4px;color:var(--c-accent2)}
+
+  .comm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+  .comm-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+  .comm-icon{font-size:24px;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--c-surface2)}
+  .comm-card h4{font-size:14px;font-weight:600}
+  .comm-card p{font-size:13px;color:var(--c-muted);flex:1}
+  .comm-link{font-size:13px;color:var(--c-accent)}
+
+  footer{border-top:1px solid var(--c-border);padding:2.5rem 2rem;text-align:center;position:relative;z-index:1}
+  .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  .footer-brand{font-family:var(--font-mono);font-size:13px;color:var(--c-muted)}
+  .footer-links{display:flex;gap:1.25rem;font-size:13px}
+  .footer-links a{color:var(--c-muted)}
+  .footer-links a:hover{color:var(--c-accent)}
+
+  hr.divider{border:none;border-top:1px solid var(--c-border);position:relative;z-index:1}
+
+  @media(max-width:600px){
+    nav{padding:0 1rem}
+    .nav-links{display:none}
+    h1{font-size:2rem}
+    .stats-row{gap:1rem}
+    .event-tag{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="grid-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo">
+  <img src="favicon1.png" alt="Nowruz Club" width="20" height="20">
+  <span>//</span> Nowruz Club
+</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#sprint">Sprints</a>
+    <a href="#team">Team</a>
+    <a href="#events">Events</a>
+    <a href="#contribute">Contribute</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('contribute').scrollIntoView({behavior:'smooth'})">Join the club</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Sprint 1 · Active now · Nowruz 1405</div>
+    <h1>A <span class="h1-accent">fortnightly marketplace</span><br>of projects &amp; skills</h1>
+    <p class="hero-sub">Nowruz Club connects talented persian language professionals in the world who have time, expertise, and energy — with open projects that need exactly that.</p>
+    <div class="hero-meta">location: <span>The world</span> &nbsp;|&nbsp; cadence: <span>2-week sprints</span> &nbsp;|&nbsp; methodology: <span>Scrum-inspired</span></div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">Explore projects</button>
+      <a class="btn-outline" href="#contribute">Join the club</a>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">7+</div><div class="stat-lbl">core members</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-lbl">active projects</div></div>
+      <div class="stat"><div class="stat-num">2wk</div><div class="stat-lbl">sprint cadence</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">open &amp; in the open</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<section id="about">
+  <div class="sec-header">
+    <div class="sec-label">// about</div>
+    <div class="sec-title">Why Nowruz Club?</div>
+    <p class="sec-sub">Nowruz marks the moment Earth's axis tilts — a reset available to everyone. We borrowed that energy for how we work together.</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-card">
+      <h3>The problem we saw</h3>
+      <p>Talented persian language professionals settling in Canada and Australia have time, skills, and motivation — but limited ways to contribute before they're fully embedded in the local economy. Skills go stale, connections are missed, and potential is left untapped.</p>
+    </div>
+    <div class="about-card">
+      <h3>What we're building</h3>
+      <p>A skill-project marketplace. Every two weeks, projects that need technical help (charitable, community, or open) are matched with contributors who have the expertise and bandwidth. We work in the open — no secrets, no NDAs.</p>
+    </div>
+    <div class="about-card">
+      <h3>Why "Nowruz"?</h3>
+      <p>Nowruz is defined by Earth's position — not by language, religion, or ethnicity. It's a universal reset. Our fortnightly sprint cadence mirrors that: close one cycle, reflect, open the next. The name signals renewal, not exclusion.</p>
+    </div>
+    <div class="about-card">
+      <h3>Who can join?</h3>
+      <p>Anyone with skills to offer or an open project that needs help. We skew toward the persian language diaspora in Australia and Canada because of shared context, but the club is culturally open. If your project is in-the-open, you're welcome.</p>
+    </div>
+  </div>
+</section>
+
+
+<hr class="divider">
+
+<section id="projects">
+  <div class="sec-header">
+    <div class="sec-label">// projects</div>
+    <div class="sec-title">Active &amp; upcoming projects</div>
+    <p class="sec-sub">All projects are open — work happens publicly. No confidentiality requirements accepted.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-top">
+        <div class="proj-title">Time Banking</div>
+        <span class="proj-badge badge-active">Sprint 1</span>
+      </div>
+      <p class="proj-desc">A platform for community members to exchange skills and services using time as currency. Helps newly arrived individuals contribute and receive support through structured time-based bartering.</p>
+      <div class="tech-stack">
+        <span class="tech-tag">web</span>
+        <span class="tech-tag">community</span>
+        <span class="tech-tag">open-source</span>
+      </div>
+      <div class="proj-footer">
+        <span class="proj-owner">owner: Mohammad Nadi</span>
+        <div class="proj-links">
+          <a href="https://pad.riseup.net/p/nowruzclub" target="_blank">notes →</a>
+        </div>
+      </div>
+    </div>
+      <div class="proj-card">
+      <div class="proj-top">
+        <div class="proj-title"> New Year in VR</div>
+        <span class="proj-badge badge-contrib">seeking contributors</span>
+      </div>
+      <p class="proj-desc">An immersive VR experience capturing the exact moment of the new year (Sal Tahvil) — built in partnership with <a href="https://www.liminalvr.com" target="_blank">Liminal VR</a> (Melbourne), whose "Awe" collection is a natural home for this. The vision: Iranians worldwide gathering as avatars in a shared virtual space at the moment of Nowruz, the way families once gathered around a TV. Live sessions, presence, memory — made possible through MetaQuest.</p>
+      <div class="tech-stack">
+        <span class="tech-tag">Unity</span>
+        <span class="tech-tag">VR / MetaQuest</span>
+        <span class="tech-tag">Liminal VR</span>
+        <span class="tech-tag">3D / XR</span>
+      </div>
+      <div class="proj-footer">
+        <span class="proj-owner">Reza Mostafavi</span>
+        <div class="proj-links">
+          <a href="https://nowruzclub.onrender.com" target="_blank">join →</a>
+        </div>
+      </div>
+    </div>
+    <div class="proj-card" style="border-style:dashed;border-color:var(--c-dim)">
+      <div class="proj-top">
+        <div class="proj-title" style="color:var(--c-muted)">Your project here</div>
+        <span class="proj-badge badge-waiting">open slot</span>
+      </div>
+      <p class="proj-desc" style="color:var(--c-dim)">Have a charitable, open, or community project that needs IT expertise? Bring it to a Sprint Opening session. If it's in the open, we'll find contributors.</p>
+      <div class="tech-stack">
+        <span class="tech-tag" style="border-style:dashed;color:var(--c-dim)">any stack</span>
+        <span class="tech-tag" style="border-style:dashed;color:var(--c-dim)">any domain</span>
+      </div>
+      <div class="proj-footer">
+        <span class="proj-owner">→ nowruzclub.onrender.com</span>
+        <div class="proj-links">
+          <a href="https://nowruzclub.onrender.com" target="_blank">propose →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>f
+
+<hr class="divider">
+
+<section id="sprint">
+  <div class="sec-header">
+    <div class="sec-label">// methodology</div>
+    <div class="sec-title">How a sprint works</div>
+    <p class="sec-sub">Inspired by Scrum, adapted for an open volunteer community. Every two weeks is a new cycle.</p>
+  </div>
+  <div class="sprint-box">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <span style="font-family:var(--font-mono);font-size:13px;color:var(--c-muted)">current →</span>
+      <span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--c-accent)">Sprint 1</span>
+      <span style="font-size:12px;color:var(--c-dim)">Farvardín 1405 · 2 weeks</span>
+      <span class="badge-active proj-badge" style="margin-left:auto">● active</span>
+    </div>
+    <div class="sprint-phase">
+      <div class="phase-item">
+        <div class="phase-name">Sprint Opening</div>
+        <div class="phase-desc">Process &amp; tooling setup. Chose GitHub for project management, adopted Scrum-inspired flow, selected pilot projects.</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-name">Grooming</div>
+        <div class="phase-desc">Product owner defines deliverables. Tasks clarified, scope confirmed, dependencies mapped.</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-name">Planning</div>
+        <div class="phase-desc">Tasks estimated and assigned. Contributors pick up items matching their skills.</div>
+      </div>
+      <div class="phase-item dim">
+        <div class="phase-name">Mid-sprint check</div>
+        <div class="phase-desc">Added by the team (not standard Scrum). A one-week pulse check to catch blockers early.</div>
+      </div>
+      <div class="phase-item dim">
+        <div class="phase-name">Review and Retrospective</div>
+        <div class="phase-desc">Show what was built. Reflect on the process. Feed learnings into the next sprint.</div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;font-size:13px;color:var(--c-muted);font-family:var(--font-mono)">tools: <code>GitHub</code> &nbsp;·&nbsp; <code>Riseup</code> &nbsp;·&nbsp; <code>Telegram</code></div>
+  </div>
+</section>
+
+
+
+<hr class="divider">
+
+<section id="team">
+  <div class="sec-header">
+    <div class="sec-label">// team</div>
+    <div class="sec-title">Core team</div>
+    <p class="sec-sub">A small founding group across the world(Melbourne and Toronto,etc). Growing one sprint at a time.</p>
+  </div>
+  <div class="team-grid">
+    <div class="member-card">
+      <div class="avatar av-green">AX</div>
+      <div class="member-name">Alexar</div>
+      <div class="member-role">Founder / Facilitator</div>
+      <div class="member-loc">📍 Melbourne, AU</div>
+    </div>
+
+    <div class="member-card">
+      <div class="avatar av-purple">ND</div>
+      <div class="member-name">Nadi</div>
+      <div class="member-role">Product Owner</div>
+      <div class="member-loc">📍 Montreal, CA</div>
+    </div>
+        <div class="member-card">
+      <div class="avatar av-blue">SM</div>
+      <div class="member-name">Samira</div>
+      <div class="member-role">Project Manager</div>
+      <div class="member-loc">📍 Toronto, CA</div>
+    </div>
+    <div class="member-card" style="border-style:dashed;border-color:var(--c-dim)">
+      <div class="avatar" style="background:var(--c-surface2);color:var(--c-dim);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto .75rem">+</div>
+      <div class="member-name" style="color:var(--c-muted)">You?</div>
+      <div class="member-role" style="color:var(--c-dim)">Contributor</div>
+      <div class="member-loc">📍 Anywhere</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="events">
+  <div class="sec-header">
+    <div class="sec-label">// events</div>
+    <div class="sec-title">Sprint calendar</div>
+    <p class="sec-sub">Public Sprint Openings every two weeks. Anyone can attend as a listener — no commitment needed.</p>
+  </div>
+  <div class="events-list">
+    <div class="event-item">
+      <div class="event-date"><div class="event-month">Apr</div><div class="event-day">06</div></div>
+      <div class="event-info">
+        <h4>Sprint 1 Opening</h4>
+        <p>Project kickoff — Time Banking project presented. Open to public listeners.</p>
+      </div>
+      <span class="event-tag badge-active">completed</span>
+    </div>
+    <div class="event-item">
+      <div class="event-date"><div class="event-month">Apr</div><div class="event-day">13</div></div>
+      <div class="event-info">
+        <h4>Sprint 1 Mid-check</h4>
+        <p>One-week pulse. Blockers surfaced, progress reviewed. Internal + open to listeners.</p>
+      </div>
+      <span class="event-tag badge-contrib">upcoming</span>
+    </div>
+    <div class="event-item">
+      <div class="event-date"><div class="event-month">Apr</div><div class="event-day">17</div></div>
+      <div class="event-info">
+        <h4>Sprint 1 Review + Retro</h4>
+        <p>Show what was built. Lessons learned. Sprint 2 preview.</p>
+      </div>
+      <span class="event-tag badge-contrib">upcoming</span>
+    </div>
+    <div class="event-item" style="opacity:.6">
+      <div class="event-date"><div class="event-month">May</div><div class="event-day">01</div></div>
+      <div class="event-info">
+        <h4>Sprint 2 Opening</h4>
+        <p>New projects, new contributors. Join to propose or pick up a project.</p>
+      </div>
+      <span class="event-tag badge-waiting">planned</span>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem;font-size:13px;color:var(--c-muted)">All events listed at <a href="https://nowruzclub.onrender.com" target="_blank">nowruzclub.onrender.com</a>. Telegram notifications available.</div>
+</section>
+
+<hr class="divider">
+
+<section id="contribute">
+  <div class="sec-header">
+    <div class="sec-label">// contribute</div>
+    <div class="sec-title">How to get involved</div>
+    <p class="sec-sub">Three paths in. Pick whichever fits your situation.</p>
+  </div>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="step-icon">01</div>
+      <div>
+        <h4>Join the Telegram group</h4>
+        <p>Say hello. Introduce yourself. Read through recent sprint notes to understand what's active. No commitment yet — just show up.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-icon">02</div>
+      <div>
+        <h4>Attend a Sprint Opening (as a listener)</h4>
+        <p>Sprint Openings are public. Come in silent mode, watch how projects are presented and contributors assigned. Dates are on the website. This is the fastest way to see if this is for you.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-icon">03A</div>
+      <div>
+        <h4>Bring a project</h4>
+        <p>Have a community, charitable, or open project that needs IT help? One requirement: it must be <code>in-the-open</code> — no confidentiality. Bring it to the next Sprint Opening and we'll find contributors.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="step-icon">03B</div>
+      <div>
+        <h4>Contribute to a project</h4>
+        <p>Browse open projects. If a project matches your skills — web dev, design, data, PM, anything — join the sprint. You get real work, new skills, and a network. The project gets your expertise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="community">
+  <div class="sec-header">
+    <div class="sec-label">// community</div>
+    <div class="sec-title">Find us</div>
+  </div>
+  <div class="comm-grid">
+    <div class="comm-card">
+      <div class="comm-icon">✈️</div>
+      <h4>Telegram</h4>
+      <p>Main coordination hub. Announcements, EOIs, and sprint discussions all happen here.</p>
+      <a class="comm-link" href="https://t.me/nowruz_club" target="_blank">Join channel →</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">📋</div>
+      <h4>Shared Notes</h4>
+      <p>All sprint notes, decisions, and project documentation. Fully public. No login needed.</p>
+      <a class="comm-link" href="https://pad.riseup.net/p/nowruzclub" target="_blank">Browse notes →</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🐙</div>
+      <h4>GitHub</h4>
+      <p>Project management lives here. Issues, milestones, and task boards per sprint.</p>
+      <a class="comm-link" href="https://github.com/users/samipourca-sudo/projects/5" target="_blank">View org →</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🌱</div>
+      <h4>Website</h4>
+      <p>Sprint calendar, event links, and entry points. Always up to date.</p>
+      <a class="comm-link" href="https://nowruzclub.onrender.com" target="_blank">nowruzclub.onrender.com →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">🌱 Nowruz Club · open sprints · Farvardín 1405</div>
+    <div class="footer-links">
+      <a href="https://nowruzclub.onrender.com" target="_blank">website</a>
+      <a href="#projects">projects</a>
+      <a href="#contribute">join</a>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--c-dim);margin-top:1rem;font-family:var(--font-mono)">// in the open · always · no exceptions</p>
+</footer>
+
+<script>
+const canvas = document.getElementById('grid-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, dots = [];
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  dots = Array.from({length:80},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+    r:Math.random()*1.5+.5
+  }));
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#00D084';
+  dots.forEach(d=>{
+    d.x+=d.vx; d.y+=d.vy;
+    if(d.x<0||d.x>W)d.vx*=-1;
+    if(d.y<0||d.y>H)d.vy*=-1;
+    ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fill();
+  });
+  ctx.strokeStyle='rgba(0,208,132,0.12)';ctx.lineWidth=.5;
+  dots.forEach((a,i)=>dots.slice(i+1).forEach(b=>{
+    const dx=a.x-b.x,dy=a.y-b.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<120){ctx.globalAlpha=(1-dist/120)*.4;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  }));
+  ctx.globalAlpha=1;
+  requestAnimationFrame(draw);
+}
+resize();
+window.addEventListener('resize',resize);
+draw();
+</script>
+</body>
+</html>
